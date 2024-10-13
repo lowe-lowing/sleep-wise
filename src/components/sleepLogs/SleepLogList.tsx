@@ -12,17 +12,12 @@ import { useOptimisticSleepLogs } from "@/app/(app)/sleep-logs/useOptimisticSlee
 import { Button } from "@/components/ui/button";
 import SleepLogForm from "./SleepLogForm";
 import { PlusIcon } from "lucide-react";
-import { ScrollArea } from "../ui/scroll-area";
+import { format } from "date-fns";
 
 type TOpenModal = (sleepLog?: SleepLog) => void;
 
-export default function SleepLogList({
-  sleepLogs,
-}: {
-  sleepLogs: CompleteSleepLog[];
-}) {
-  const { optimisticSleepLogs, addOptimisticSleepLog } =
-    useOptimisticSleepLogs(sleepLogs);
+export default function SleepLogList({ sleepLogs }: { sleepLogs: CompleteSleepLog[] }) {
+  const { optimisticSleepLogs, addOptimisticSleepLog } = useOptimisticSleepLogs(sleepLogs);
   const [open, setOpen] = useState(false);
   const [activeSleepLog, setActiveSleepLog] = useState<SleepLog | null>(null);
   const openModal = (sleepLog?: SleepLog) => {
@@ -33,19 +28,13 @@ export default function SleepLogList({
 
   return (
     <div>
-      <Modal
-        open={open}
-        setOpen={setOpen}
-        title={activeSleepLog ? "Edit SleepLog" : "Create Sleep Log"}
-      >
-        {/* <ScrollArea className="max-h-[80vh] overflow-y-auto"> */}
+      <Modal open={open} setOpen={setOpen} title={activeSleepLog ? "Edit SleepLog" : "Create Sleep Log"}>
         <SleepLogForm
           sleepLog={activeSleepLog}
           addOptimistic={addOptimisticSleepLog}
           openModal={openModal}
           closeModal={closeModal}
         />
-        {/* </ScrollArea> */}
       </Modal>
       <div className="absolute right-0 top-0 ">
         <Button onClick={() => openModal()} variant={"outline"}>
@@ -57,11 +46,7 @@ export default function SleepLogList({
       ) : (
         <ul>
           {optimisticSleepLogs.map((sleepLog) => (
-            <SleepLog
-              sleepLog={sleepLog}
-              key={sleepLog.id}
-              openModal={openModal}
-            />
+            <SleepLog sleepLog={sleepLog} key={sleepLog.id} openModal={openModal} />
           ))}
         </ul>
       )}
@@ -69,20 +54,12 @@ export default function SleepLogList({
   );
 }
 
-const SleepLog = ({
-  sleepLog,
-  openModal,
-}: {
-  sleepLog: CompleteSleepLog;
-  openModal: TOpenModal;
-}) => {
+const SleepLog = ({ sleepLog }: { sleepLog: CompleteSleepLog; openModal: TOpenModal }) => {
   const optimistic = sleepLog.id === "optimistic";
   const deleting = sleepLog.id === "delete";
   const mutating = optimistic || deleting;
   const pathname = usePathname();
-  const basePath = pathname.includes("sleep-logs")
-    ? pathname
-    : pathname + "/sleep-logs/";
+  const basePath = pathname.includes("sleep-logs") ? pathname : pathname + "/sleep-logs/";
 
   return (
     <li
@@ -93,7 +70,7 @@ const SleepLog = ({
       )}
     >
       <div className="w-full">
-        <div>{sleepLog.date}</div>
+        <div>{format(sleepLog.date, "PPP")}</div>
       </div>
       <Button variant={"link"} asChild>
         <Link href={basePath + "/" + sleepLog.id}>Edit</Link>
@@ -105,12 +82,8 @@ const SleepLog = ({
 const EmptyState = ({ openModal }: { openModal: TOpenModal }) => {
   return (
     <div className="text-center">
-      <h3 className="mt-2 text-sm font-semibold text-secondary-foreground">
-        No sleep logs
-      </h3>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Get started by creating a new sleep log.
-      </p>
+      <h3 className="mt-2 text-sm font-semibold text-secondary-foreground">No sleep logs</h3>
+      <p className="mt-1 text-sm text-muted-foreground">Get started by creating a new sleep log.</p>
       <div className="mt-6">
         <Button onClick={() => openModal()}>
           <PlusIcon className="h-4" /> New Sleep Logs{" "}

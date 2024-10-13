@@ -6,7 +6,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 export default function UpdateEmailCard({ email }: { email: string }) {
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const router = useRouter();
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
@@ -25,8 +25,7 @@ export default function UpdateEmailCard({ email }: { email: string }) {
         body: JSON.stringify({ email }),
         headers: { "Content-Type": "application/json" },
       });
-      if (res.status === 200)
-        toast.success("Successfully updated email!");
+      if (res.status === 200) toast.success("Successfully updated email!");
       router.refresh();
     });
   };
@@ -35,8 +34,7 @@ export default function UpdateEmailCard({ email }: { email: string }) {
     <AccountCard
       params={{
         header: "Your Email",
-        description:
-          "Please enter the email address you want to use with your account.",
+        description: "Please enter the email address you want to use with your account.",
       }}
     >
       <form onSubmit={handleSubmit}>

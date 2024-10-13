@@ -13,7 +13,7 @@ const Sidebar = async () => {
     <aside className="h-screen min-w-52 bg-muted hidden md:block p-4 pt-8 border-r border-border shadow-inner">
       <div className="flex flex-col justify-between h-full">
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold ml-4">Logo</h3>
+          <h3 className="text-lg font-semibold ml-4">Sleep Wise</h3>
           <SidebarItems />
         </div>
         <UserDetails session={session} />
@@ -35,9 +35,7 @@ const UserDetails = ({ session }: { session: AuthSession }) => {
       <div className="flex items-center justify-between w-full border-t border-border pt-4 px-2">
         <div className="text-muted-foreground">
           <p className="text-xs">{user.name ?? "John Doe"}</p>
-          <p className="text-xs font-light pr-4">
-            {user.email ?? "john@doe.com"}
-          </p>
+          <p className="text-xs font-light pr-4">{user.email ?? "john@doe.com"}</p>
         </div>
         <Avatar className="h-10 w-10">
           <AvatarFallback className="border-border border-2 text-muted-foreground">

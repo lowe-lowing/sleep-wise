@@ -1,0 +1,1 @@
+ALTER TABLE "sleep_logs" ALTER COLUMN "date" SET DATA TYPE timestamp;

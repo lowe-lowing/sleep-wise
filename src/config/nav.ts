@@ -1,5 +1,5 @@
 import { SidebarLink } from "@/components/SidebarItems";
-import { Cog, Globe, User, HomeIcon } from "lucide-react";
+import { Cog, Globe, User, HomeIcon, HeartHandshake } from "lucide-react";
 
 type AdditionalLinks = {
   title: string;
@@ -14,6 +14,16 @@ export const defaultLinks: SidebarLink[] = [
 
 export const additionalLinks: AdditionalLinks[] = [
   {
+    title: "AI Analysis",
+    links: [
+      {
+        href: "/sleep-helper",
+        title: "Sleep Helper",
+        icon: HeartHandshake,
+      },
+    ],
+  },
+  {
     title: "Entities",
     links: [
       {
@@ -23,6 +33,4 @@ export const additionalLinks: AdditionalLinks[] = [
       },
     ],
   },
-
 ];
-

@@ -1,13 +1,5 @@
 import { sql } from "drizzle-orm";
-import {
-  date,
-  timestamp,
-  text,
-  integer,
-  varchar,
-  pgTable,
-  uniqueIndex,
-} from "drizzle-orm/pg-core";
+import { date, timestamp, text, integer, varchar, pgTable, index } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -22,7 +14,7 @@ export const sleepLogs = pgTable(
     id: varchar("id", { length: 191 })
       .primaryKey()
       .$defaultFn(() => nanoid()),
-    date: date("date").notNull(),
+    date: timestamp("date").notNull(),
     sleepTime: timestamp("sleep_time").notNull(),
     wakeTime: timestamp("wake_time").notNull(),
     sleepQuality: integer("sleep_quality"),
@@ -45,7 +37,7 @@ export const sleepLogs = pgTable(
   },
   (sleepLogs) => {
     return {
-      userIdIndex: uniqueIndex("sleep_log_user_id_idx").on(sleepLogs.userId),
+      userIdIndex: index("sleep_log_user_id_idx").on(sleepLogs.userId),
     };
   }
 );
@@ -53,11 +45,10 @@ export const sleepLogs = pgTable(
 // Schema for sleepLogs - used to validate API requests
 const baseSchema = createSelectSchema(sleepLogs).omit(timestamps);
 
-export const insertSleepLogSchema =
-  createInsertSchema(sleepLogs).omit(timestamps);
+export const insertSleepLogSchema = createInsertSchema(sleepLogs).omit(timestamps);
 export const insertSleepLogParams = baseSchema
   .extend({
-    date: z.coerce.string().min(1),
+    date: z.coerce.date(),
     sleepTime: z.coerce.date(),
     wakeTime: z.coerce.date(),
     sleepQuality: z.coerce.number(),
@@ -75,7 +66,7 @@ export const insertSleepLogParams = baseSchema
 export const updateSleepLogSchema = baseSchema;
 export const updateSleepLogParams = baseSchema
   .extend({
-    date: z.coerce.string().min(1),
+    date: z.coerce.date(),
     sleepTime: z.coerce.date(),
     wakeTime: z.coerce.date(),
     sleepQuality: z.coerce.number(),
@@ -98,6 +89,4 @@ export type UpdateSleepLogParams = z.infer<typeof updateSleepLogParams>;
 export type SleepLogId = z.infer<typeof sleepLogIdSchema>["id"];
 
 // this type infers the return from getSleepLogs() - meaning it will include any joins
-export type CompleteSleepLog = Awaited<
-  ReturnType<typeof getSleepLogs>
->["sleepLogs"][number];
+export type CompleteSleepLog = Awaited<ReturnType<typeof getSleepLogs>>["sleepLogs"][number];

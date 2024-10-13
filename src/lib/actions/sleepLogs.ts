@@ -1,11 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import {
-  createSleepLog,
-  deleteSleepLog,
-  updateSleepLog,
-} from "@/lib/api/sleepLogs/mutations";
+import { createSleepLog, deleteSleepLog, updateSleepLog } from "@/lib/api/sleepLogs/mutations";
 import {
   SleepLogId,
   NewSleepLogParams,
