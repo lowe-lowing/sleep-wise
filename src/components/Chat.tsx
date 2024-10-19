@@ -1,19 +1,34 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SleepLog } from "@/lib/db/schema/sleepLogs";
 import { useChat } from "ai/react";
+import { format } from "date-fns";
 import { useEffect } from "react";
 
 type ChatProps = {
-  initialPrompt: string;
+  sleepLogs: SleepLog[];
 };
 
-export default function Chat({ initialPrompt }: ChatProps) {
+export default function Chat({ sleepLogs }: ChatProps) {
   const { messages, input, handleInputChange, handleSubmit, append } = useChat();
 
   useEffect(() => {
-    append({ role: "user", content: initialPrompt });
-  }, [initialPrompt]);
+    const formattedLogs = sleepLogs
+      .map(
+        (log) =>
+          `Date: ${format(log.date, "yyyy-MM-dd")}, Sleep: ${format(log.sleepTime, "yyyy-MM-dd HH:mm")}, Wake: ${format(
+            log.wakeTime,
+            "yyyy-MM-dd HH:mm"
+          )}`
+      )
+      .join("\n");
+
+    const prompt = `Analyze the following sleep logs and provide a weekly analysis of sleep quality, patterns, and suggestions for improvement:\n\n${formattedLogs}`;
+
+    append({ role: "user", content: prompt });
+  }, [prompt]);
+
   return (
     <div className="p-4 md:p-6">
       <h1 className="text-2xl font-semibold">Sleep Analysis based on latest week of sleep</h1>
