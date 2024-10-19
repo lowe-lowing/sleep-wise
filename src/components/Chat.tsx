@@ -15,6 +15,7 @@ export default function Chat({ sleepLogs }: ChatProps) {
 
   useEffect(() => {
     const formattedLogs = sleepLogs
+      .filter((log) => log.date >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))
       .map(
         (log) =>
           `Date: ${format(log.date, "yyyy-MM-dd")}, Sleep: ${format(log.sleepTime, "yyyy-MM-dd HH:mm")}, Wake: ${format(
@@ -24,10 +25,10 @@ export default function Chat({ sleepLogs }: ChatProps) {
       )
       .join("\n");
 
-    const prompt = `Analyze the following sleep logs and provide a weekly analysis of sleep quality, patterns, and suggestions for improvement:\n\n${formattedLogs}`;
+    const prompt = `You are a sleep expert who specialices in helping people improving their sleep paterns and increase happiness. Analyze the following sleep logs and provide an analysis of sleep quality, patterns, and suggestions for improvement:\n\n${formattedLogs}`;
 
     append({ role: "user", content: prompt });
-  }, [prompt]);
+  }, [sleepLogs]);
 
   return (
     <div className="p-4 md:p-6">
